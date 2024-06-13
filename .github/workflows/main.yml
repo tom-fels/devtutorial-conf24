@@ -149,3 +149,17 @@ jobs:
         with:
           name: pytest-report
           path: ${{ github.workspace }}/pytest-report.html
+
+
+  release:
+    if: startsWith(github.event.ref, 'refs/tags/v')
+    needs: [test-v9, test-v9-2-1, run-appinspect, run-appinspect-api]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Create a Release
+      uses: elgohr/Github-Release-Action@v5
+      env:
+        GH_TOKEN: ${{ secrets.AUTOMATION_TOKEN }}
+      with:
+        title: ${{ github.ref_name }} release
